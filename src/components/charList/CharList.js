@@ -1,4 +1,4 @@
-import { Component} from 'react/cjs/react.production.min';
+import { useState, useEffect, useRef} from 'react';
 import React from 'react';
 import './charList.scss';
 import MarvelServices from '../../services/MarvelServices';
@@ -7,73 +7,65 @@ import Spinner from '../spinner/Spinner';
 import PropTypes from 'prop-types';
 
 
-class CharList extends Component {
-    state={
-        charList: [],
-        loading: true,
-        error: false,
-        offset:210,
-        newCharListItem: false,
-        blockButton:false
+const CharList =(props)=> {
 
-   }
-    
+   const [charList, sethCarList] = useState([]);
+   const [loading, setLoading] = useState(true);;
+   const [error, setError] = useState(false);
+   const [offset, setOffset] = useState(210);
+   const [newCharListItem, setNewCharListItem] = useState(false);
+   const [blockButton, setBlockButton] = useState(false);
    
-   refArr = [];
+  const refArr = useRef([]);
 
-   marvelService = new MarvelServices();
+   const marvelService = new MarvelServices();
 
-   addRefFocus=(index)=>{
+   const addRefFocus=(index)=>{
 
-        this.refArr.forEach((item )=>{
+        refArr.current.forEach((item)=>{
             item.classList.remove('char__item_selected')
         })
-            this.refArr[index].classList.add('char__item_selected')
-            this.refArr[index].focus();
+            refArr.current[index].classList.add('char__item_selected')
+            refArr.current[index].focus();
    }
 
-   refAdd=(ref)=>{
-    this.refArr.push(ref)
+   const refAdd=(ref ,i)=>{
+        refArr.current[i] = (ref)
+      
    }
 
-   componentDidMount() {
-       this.onRequest()
+    useEffect(()=>{
+        onRequest()
+   }, [])
+
+
+
+    const onRequest=(offset)=>{
+
+        setBlockButton(true)
+        marvelService.getAllCharacters(offset)
+        .then(onloaded)
+        .catch(onError)
    }
 
-
-   onRequest=(offset)=>{
-    this.setState({
-        blockButton:true
-    })
-
-
-    this.marvelService.getAllCharacters(offset)
-        .then(this.onloaded)
-        .catch(this.onError)
-   }
-
-   onloaded =(newCharList)=>{
+   const onloaded =(newCharList)=>{
         let end = false;
         if (newCharList.length < 9 ){
             end = true
         }
-        
-    this.setState(({charList, offset})=>({
-        charList: [...charList, ...newCharList],
-        loading:false,
-        offset: offset +9,
-        newCharListItem: end,
-        blockButton: false
-    }))
+
+        sethCarList((charList) =>[...charList, ...newCharList])
+        setLoading(false);
+        setOffset(offset => offset +9);
+        setNewCharListItem(end);
+        setBlockButton(false);
    }
-   onError = ()=>{
-    this.setState({
-        error:true,
-        loading:false
-    })
+   const onError = ()=>{
+        setError(true);
+        setLoading(false);
    }
 
-   renderItems=(arr)=>{
+   const renderItems=(arr)=>{
        const items = arr.map((item, i) =>{
             let imgStyle  = {'objectFit' : 'cover'}
             if(item.thumbnail ==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'){
@@ -82,8 +74,8 @@ class CharList extends Component {
             
             return(
                 <li className="char__item"
-                    onClick={()=>{this.props.addIdState(item.id); this.addRefFocus(i)}}
-                    ref = {this.refAdd}
+                    onClick={()=>{props.addIdState(item.id); addRefFocus(i)}}
+                    ref = {(ref)=> {refAdd(ref ,i)}}
                     tabIndex={'0'}
                     key={item.id}>
                     <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
@@ -99,10 +91,7 @@ class CharList extends Component {
             )
     }
    
-
-   render(){
-    const {loading , error, charList, offset, newCharListItem, blockButton} = this.state;
-    const items = this.renderItems(charList);
+    const items = renderItems(charList);
 
     const errorMessage = error?<ErrorMessage/>:null;
     const spinner = loading?<Spinner/>:null;
@@ -114,7 +103,7 @@ class CharList extends Component {
             {spinner}
             {content}
             <button className="button button__main button__long"
-                onClick={() => this.onRequest(offset)}
+                onClick={() => onRequest(offset)}
                 disabled = {blockButton}
                 style={newCharListItem?{"display":"none"}: {"display":"block"}}>
                 <div className="inner">load more</div>
@@ -122,7 +111,7 @@ class CharList extends Component {
         </div>
     )
    }
-}
+
 CharList.propTypes={ 
     addIdState: PropTypes.func.isRequired
 };
