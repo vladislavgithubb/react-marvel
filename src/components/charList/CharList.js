@@ -80,11 +80,11 @@ const CharList =(props)=> {
                     key={item.id}>
                     <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
                     <div className="char__name">{item.name}</div>
-                </li>
+                 </li>
             )
         });
 
-            return (
+            return ( 
                 <ul className="char__grid">
                     {items}
                 </ul>
