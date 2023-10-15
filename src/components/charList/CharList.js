@@ -1,24 +1,22 @@
 import { useState, useEffect, useRef} from 'react';
 import React from 'react';
 import './charList.scss';
-import MarvelServices from '../../services/MarvelServices';
+import useMarvelServices from '../../services/MarvelServices';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import PropTypes from 'prop-types';
 
 
 const CharList =(props)=> {
+    const {getAllCharacters, loading, error} = useMarvelServices()
 
    const [charList, sethCarList] = useState([]);
-   const [loading, setLoading] = useState(true);;
-   const [error, setError] = useState(false);
    const [offset, setOffset] = useState(210);
    const [newCharListItem, setNewCharListItem] = useState(false);
    const [blockButton, setBlockButton] = useState(false);
    
   const refArr = useRef([]);
 
-   const marvelService = new MarvelServices();
 
    const addRefFocus=(index)=>{
 
@@ -43,9 +41,8 @@ const CharList =(props)=> {
     const onRequest=(offset)=>{
 
         setBlockButton(true)
-        marvelService.getAllCharacters(offset)
+        getAllCharacters(offset)
         .then(onloaded)
-        .catch(onError)
    }
 
    const onloaded =(newCharList)=>{
@@ -55,14 +52,9 @@ const CharList =(props)=> {
         }
 
         sethCarList((charList) =>[...charList, ...newCharList])
-        setLoading(false);
         setOffset(offset => offset +9);
         setNewCharListItem(end);
         setBlockButton(false);
-   }
-   const onError = ()=>{
-        setError(true);
-        setLoading(false);
    }
 
    const renderItems=(arr)=>{
