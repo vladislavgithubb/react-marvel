@@ -6,9 +6,10 @@ const useHttp = ()=>{
 
     const reqwest = useCallback(async(url, method = "GET", body = null, headers = {"Content-Type": "application/json"} )=>{
         setLoading(true)
-        const response = await fetch(url, {method, body , headers} ) 
+        
 
         try{
+            const response = await fetch(url, {method, body , headers} ) 
             if(!response.ok){
                 throw new Error (`Error responce ${response.status}`)
             }
@@ -20,7 +21,7 @@ const useHttp = ()=>{
             catch(e){
                 setLoading(false)
                 setError(true)
-                throw (e.error)  
+                throw (e)  
             }
 
     },[])
