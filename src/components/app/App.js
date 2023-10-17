@@ -5,6 +5,7 @@ import CharInfo from "../charInfo/CharInfo";
 import { useState } from "react"
 import decoration from '../../resources/img/vision.png';
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import ComicsList from "../comicsList/ComicsList";
 
 const App = () =>{
     const [id, setId] = useState(null);
@@ -19,12 +20,14 @@ const App = () =>{
             <div className="app">
                 <AppHeader/>
                 <main>
-                    <RandomChar/>
+                <ComicsList/>
+                    {/* <RandomChar/> */}
                     <div className="char__content">
-                        <CharList  addIdState = {addIdState}/>
+                        {/* <CharList  addIdState = {addIdState}/>
                         <ErrorBoundary>
                             <CharInfo appState = {id}/>
-                        </ErrorBoundary>
+                        </ErrorBoundary> */}
+                        
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision"/>
                 </main>
