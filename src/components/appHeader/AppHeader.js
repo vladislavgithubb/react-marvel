@@ -15,7 +15,7 @@ const AppHeader = () => {
                 <ul>
                     
                     <li>
-                        <NavLink end 
+                        <NavLink  
                                 to = "/react-marvel"
                                 style ={({isActive})=>({color: isActive?"#9F0013":"inherit" })}>
                                 Characters
