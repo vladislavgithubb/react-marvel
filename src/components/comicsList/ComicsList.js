@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const ComicsList = () => {
-    const{errorClear, loading, error, getAllComics} = useMarvelServices();
+    const{ loading, error, getAllComics} = useMarvelServices();
     
     const [offset, setOffset] = useState(210);
-    const [newComicsListLoading , setNewComiscListLoading] = useState(false);
+    const [setNewComiscListLoading] = useState(false);
     const [arr, setArr] = useState([]);
 
     useEffect(()=>{

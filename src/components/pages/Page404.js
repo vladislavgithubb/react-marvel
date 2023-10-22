@@ -9,7 +9,8 @@ const Page404 = ()=>{
         <ErrorMessage/>
         <Link to = "/react-marvel"
             style={{"display":"block","textAlign":"center" , "fontSize" : "20px", "fontWeight": "900"}}>Back to main pages</Link>
-        </>
+        </>         
+
     )
 
 }
