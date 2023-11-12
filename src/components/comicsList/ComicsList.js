@@ -9,7 +9,7 @@ const ComicsList = () => {
     const{ loading, error, getAllComics} = useMarvelServices();
     
     const [offset, setOffset] = useState(210);
-    const [setNewComiscListLoading] = useState(false);
+    const [newComiscListLoading, setNewComiscListLoading] = useState(false);
     const [arr, setArr] = useState([]);
 
     useEffect(()=>{
