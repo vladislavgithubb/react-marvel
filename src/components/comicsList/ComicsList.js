@@ -22,30 +22,31 @@ const setContent = (process, Component, newComiscListLoading) => {
 }
 
 const ComicsList = () => {
-    const{getAllComics, setProcess, process} = useMarvelServices();
+    const{getAllComics, setProcess, process, errorClear} = useMarvelServices();
     
     const [offset, setOffset] = useState(210);
     const [newComiscListLoading, setNewComiscListLoading] = useState(false);
     const [arr, setArr] = useState([]);
 
     useEffect(()=>{
-        onRequest()
+        onRequest(true)
     },[])
 
-    const onRequest = ()=>{
-        setNewComiscListLoading(true)
+    const onRequest = (initial)=>{
+        initial? setNewComiscListLoading(false):setNewComiscListLoading(true);
         getAllComics(offset)
             .then((responce)=>{
                 setArr([ ...arr, ...responce,])
                 setOffset(offset + 8)
-                setNewComiscListLoading(false);
+                
             })
             .then(() => setProcess('confirmed'));
+
     }
 
 
-    const renderItems =(arr)=>{
-        return  arr.map((item, i) =>{
+    const renderItems =(arr)=>{ 
+        const items = arr.map((item, i) =>{
         return (
             <li 
                 className="comics__item"
@@ -58,6 +59,11 @@ const ComicsList = () => {
             </li>
         ) 
         }) 
+
+        return(
+            <ul className="comics__grid">
+                {items}
+            </ul>)
           
     }
     // const items =  renderItems(arr);
@@ -66,9 +72,7 @@ const ComicsList = () => {
 
     return (
         <div className="comics__list">
-            <ul className="comics__grid">
             {setContent(process, () => renderItems(arr), newComiscListLoading)}
-            </ul>
             <button 
                 onClick={() => onRequest()}
                 className="button button__main button__long">
