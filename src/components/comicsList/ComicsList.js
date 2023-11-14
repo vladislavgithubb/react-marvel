@@ -5,8 +5,24 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+
+const setContent = (process, Component, newComiscListLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner/>;
+        case 'loading':
+            return newComiscListLoading ? <Component/> : <Spinner/>;
+        case 'confirmed':
+            return <Component/>;
+        case 'error':
+            return <ErrorMessage/>;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
+
 const ComicsList = () => {
-    const{ loading, error, getAllComics} = useMarvelServices();
+    const{getAllComics, setProcess, process} = useMarvelServices();
     
     const [offset, setOffset] = useState(210);
     const [newComiscListLoading, setNewComiscListLoading] = useState(false);
@@ -24,6 +40,7 @@ const ComicsList = () => {
                 setOffset(offset + 8)
                 setNewComiscListLoading(false);
             })
+            .then(() => setProcess('confirmed'));
     }
 
 
@@ -43,17 +60,15 @@ const ComicsList = () => {
         }) 
           
     }
-    const items =  renderItems(arr);
-       const errorr =  error?<ErrorMessage/>: null
-       const spinnerr = loading?<Spinner/>: null
+    // const items =  renderItems(arr);
+    //    const errorr =  error?<ErrorMessage/>: null
+    //    const spinnerr = loading?<Spinner/>: null
 
     return (
         <div className="comics__list">
             <ul className="comics__grid">
-               {items}
-               {errorr}
+            {setContent(process, () => renderItems(arr), newComiscListLoading)}
             </ul>
-            {spinnerr}
             <button 
                 onClick={() => onRequest()}
                 className="button button__main button__long">

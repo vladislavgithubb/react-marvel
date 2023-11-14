@@ -2,15 +2,14 @@ import useMarvelServices from '../../services/MarvelServices';
 import './singleComic.scss';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import { useEffect, useState } from 'react';
-import Spinner from '../spinner/Spinner';
 import { Helmet } from 'react-helmet';
+import setContent from '../../utils/setContent';
 
 
 const CharPages = () => {
     const {id} = useParams()
-    const {errorClear, loading, error, getCharacter} = useMarvelServices();
+    const {errorClear, process, setProcess,getCharacter} = useMarvelServices();
 
     const [char, setChar] = useState();
     useEffect(()=>{
@@ -20,19 +19,19 @@ const CharPages = () => {
     const reqwestComic =(id)=>{
         errorClear()
         getCharacter(id)
-            .then((data)=>setChar(data))
-            console.log(char);
+            .then((data)=>{setChar(data);  console.log(data)})
+            .then(()=>setProcess("confirmed"))
+            
+            console.log(process);
     }
 
-    const content = !(loading || error || !char)?<View data = {char}/>:null;
-    const errorComics = error? <ErrorMessage/>:null;
-    const loadingComics = loading? <Spinner/>:null;
+    // const content = !(loading || error || !char)?<View data = {char}/>:null;
+    // const errorComics = error? <ErrorMessage/>:null;
+    // const loadingComics = loading? <Spinner/>:null;
 
     return (
         <>
-        {loadingComics}
-        {errorComics}
-        {content}
+        {setContent(process, View, char)}
         </>
     )
 }
@@ -54,6 +53,5 @@ const CharPages = () => {
         )
 
     }
-
 
 export default CharPages;

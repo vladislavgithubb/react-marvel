@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 import "./charSearchForm.scss";
 
  const SeachForm =()=> {
-    const {getCharacterByName, loading , error} = useMarvelServices();
+    const {getCharacterByName, setProcess,} = useMarvelServices();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const[ char , setChar] = useState();
     const onSubmit = data => {
         getCharacterByName(data.Hero)
             .then(data => setChar(data))
-            .catch()
+            .then(() => setProcess('confirmed'))
     };
     const charCheck = Array.isArray(char)? (char.length)? 
                     <div className="char__search-wrapper">
